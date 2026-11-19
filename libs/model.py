@@ -151,6 +151,9 @@ class Model(nn.Module):
             # Guessing the next token
             probs = nnfunc.softmax(logits, dim = -1)
             nextIdx = torch.multinomial(probs, num_samples = 1).view(1, -1)
-            idx = torch.cat((idx, nextIdx), dim = -1)
+
+            # If only one token is to be generated, do so
+            if length == 1: return nextIdx
+            else: idx = torch.cat((idx, nextIdx), dim = -1)
 
         return idx
