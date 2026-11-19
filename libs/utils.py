@@ -41,3 +41,10 @@ def count_model_parameters(model: Model):
         params = parameter.numel()
         total_params += params
     return total_params
+
+def tokenToString(tokens: list[int]) -> str:
+    string = ''
+
+    for token in tokens:
+        string += chr(token)
+    return string
