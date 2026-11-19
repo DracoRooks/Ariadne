@@ -7,14 +7,11 @@ from libs.utils import tokenToString
 
 model = Model()
 
-model.load_state_dict(torch.load("./models/ri_gpt_x4_SwiGLU_1.88.pth", map_location=HyprParams.device, weights_only=True))
+model.load_state_dict(torch.load("./models/ri_gpt_x5_ReLU_2.00.pth", map_location=HyprParams.device, weights_only=True))
 
 print("Begining Inference...")
 model.eval()
 inputStr = "Once upon a time,"
-
-# out = model.generate(torch.tensor(BPE.encode(inputStr)).view(1, -1).to(HyprParams.device), 1000)
-# print(f"output: {tokenToString(BPE.decode(out[0].tolist()))}")
 
 # generate a token individually
 inputTensor = torch.tensor(BPE.encode(inputStr)).view(1, -1).to(HyprParams.device)
