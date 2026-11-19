@@ -59,7 +59,7 @@ class MultiHeadAttention(nn.Module):
 # Post-Attention Feed Forward
 class FeedForward(nn.Module):
 
-    def __init__(self, fanIn: int, fanOut: int | None) -> None:
+    def __init__(self, fanIn: int, fanOut: int | None = None) -> None:
         super().__init__()
 
         if fanOut == None:
@@ -68,7 +68,7 @@ class FeedForward(nn.Module):
 
         self.upscale = nn.Linear(fanIn, fanOut)
         self.gate = nn.Linear(fanIn, fanOut)
-        self.downscale = nn.Linear(fanOut, fanOut)
+        self.downscale = nn.Linear(fanOut, fanIn)
 
         self.dropout = nn.Dropout(HyprParams.pDrop)
 
@@ -81,7 +81,7 @@ class FeedForward(nn.Module):
 # Attention/Feed-Forward/Norm Block
 class Block(nn.Module):
 
-    def __init__(self, fanIn: int, fanOut: int | None) -> None:
+    def __init__(self, fanIn: int, fanOut: int | None = None) -> None:
         super().__init__()
 
         sizeHead = fanIn // HyprParams.nHeads
