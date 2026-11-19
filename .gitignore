@@ -1,0 +1,8 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# 3rd party package manager
+venv/
+
+# dataset directory
+datasets/
