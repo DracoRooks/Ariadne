@@ -59,29 +59,27 @@ class MultiHeadAttention(nn.Module):
 # Post-Attention Feed Forward
 class FeedForward(nn.Module):
 
-    def __init__(self, fanIn: int, fanOut: int | None = None) -> None:
+    def __init__(self, fanIn: int, fanOut: int) -> None:
         super().__init__()
 
-        if fanOut == None:
-            fanOut = int(8 / 3 * fanIn)
-            fanOut = ((fanOut + 63) // 64) * 64
-
-        self.upscale = nn.Linear(fanIn, fanOut)
-        self.gate = nn.Linear(fanIn, fanOut)
-        self.downscale = nn.Linear(fanOut, fanIn)
+        self.net = nn.Sequential(
+            nn.Linear(fanIn, fanOut * 8),
+            nn.ReLU(),
+            nn.Linear(fanOut * 8, fanIn),
+            nn.Dropout(HyprParams.pDrop)
+        )
 
         self.dropout = nn.Dropout(HyprParams.pDrop)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        out = self.downscale(nnfunc.silu(self.gate(x)) * self.upscale(x))
-        out = self.dropout(out)
+        out = self.net(x)
 
         return out
 
 # Attention/Feed-Forward/Norm Block
 class Block(nn.Module):
 
-    def __init__(self, fanIn: int, fanOut: int | None = None) -> None:
+    def __init__(self, fanIn: int, fanOut: int) -> None:
         super().__init__()
 
         sizeHead = fanIn // HyprParams.nHeads
@@ -108,7 +106,7 @@ class Model(nn.Module):
 
         self.tokenEmbeddingTable = nn.Embedding(HyprParams.nVocab, HyprParams.nEmbed)
         self.positionEmbeddingTable = nn.Embedding(HyprParams.nBlock, HyprParams.nEmbed)
-        self.blocks = nn.Sequential(*[Block(HyprParams.nEmbed) for _ in range(HyprParams.nLayer)])
+        self.blocks = nn.Sequential(*[Block(HyprParams.nEmbed, HyprParams.nEmbed) for _ in range(HyprParams.nLayer)])
         self.layerNorm = nn.LayerNorm(HyprParams.nEmbed)
 
         self.linear = nn.Linear(HyprParams.nEmbed, HyprParams.nVocab)

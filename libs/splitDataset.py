@@ -8,7 +8,7 @@ from Scribe import BytePairEncoder
 # Training the tokenizer
 print("Training Tokenizer...")
 BPE = BytePairEncoder()
-BPE.train("./datasets/data.txt", HyprParams.nVocab - 256, False, True)
+BPE.train("./datasets/data.txt", HyprParams.nVocab - 256, False, False)
 print("Training Tokenizer... Done!")
 
 # Fetching the encoded (according to the tokenizer) dataset
