@@ -19,19 +19,15 @@ allHeads = {6: [0, 1, 3], 7: [0, 1], 4: [2]}
 inputStr = '"Fang Yuan, quietly hand over the Spring Autumn Cicada and I\'ll give you a quick death!"'
 inputTensor = torch.tensor(BPE.encode(inputStr)).view(1, -1).to(HyprParams.device)
 highlights = [8, 9, 10]
+# print(inputTensor.shape[1])
 
-@torch.no_grad()
-def infer(length: int):
-    for i in range(length):
-        mask = makeMask(inputTensor.shape[1], highlights)
+for i in range(512):
+    mask = makeMask(inputTensor.shape[1], highlights)
 
-        with steering(model, allHeads, mask, 0.01):
-            out = model.generate(inputTensor, 1)
+    with steering(model, allHeads, mask, 0.01):
+        out = model.generate(inputTensor, 1)
 
-        outStr = tokenToString(BPE.decode(out[0].tolist()))
-        print(outStr, end="", flush=True)
+    outStr = tokenToString(BPE.decode(out[0].tolist()))
+    print(outStr, end="", flush=True)
 
-        inputTensor = torch.cat((inputTensor, out), dim = -1)
-
-infer(512)
-print("\n")
+    inputTensor = torch.cat((inputTensor, out), dim = -1)
