@@ -23,7 +23,8 @@ class HyprParams:
     nEpochs = 5001
 
     # Compute Device
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = 'cpu'
 
     # Loss Estimation Params
     evalIters = 20
