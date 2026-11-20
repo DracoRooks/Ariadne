@@ -34,3 +34,7 @@ class HyprParams:
 
     # Inference Hyper Params
     topk = 20
+    topk_heads = 6        # how many heads to keep
+    alpha = 0.001     # steering strength used while profiling
+    head_batches = 256      # examples per task; bigger = less noisy grid
+    nll_tolerance = 0.02 # a head is rejected if steering it makes ordinary text worse than this (NLL)
